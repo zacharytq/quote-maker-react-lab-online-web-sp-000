@@ -2,22 +2,29 @@ import React, { Component } from 'react';
 import uuid from 'uuid';
 import { connect } from 'react-redux';
 import { addQuote } from '../actions/quotes';
+import QuoteCard from './QuoteCard';
 
 class QuoteForm extends Component {
 
   state = {
-    //set up a controlled form with internal state
+    content: '',
+    author: ''
   }
 
   handleOnChange = event => {
-    // Handle Updating Component State
+    this.setState({
+      [event.target.name]: event.target.value
+    })
   }
 
   handleOnSubmit = event => {
-    // Handle Form Submit event default
-    // Create quote object from state
-    // Pass quote object to action creator
-    // Update component state to return to default state
+    event.preventDefault()
+    const quoteData = { ...this.state, id: uuid(), votes: 0 };
+    this.props.dispatch(addQuote(quoteData));
+    this.setState({
+      content: '',
+      author: ''
+    });
   }
 
   render() {
@@ -33,7 +40,9 @@ class QuoteForm extends Component {
                     <div className="col-md-5">
                       <textarea
                         className="form-control"
+                        name='content'
                         value={this.state.content}
+                        onChange={this.handleOnChange}
                       />
                     </div>
                   </div>
@@ -43,7 +52,9 @@ class QuoteForm extends Component {
                       <input
                         className="form-control"
                         type="text"
+                        name='author'
                         value={this.state.author}
+                        onChange={this.handleOnChange}
                       />
                     </div>
                   </div>
@@ -62,5 +73,4 @@ class QuoteForm extends Component {
   }
 }
 
-//add arguments to connect as needed
 export default connect()(QuoteForm);
